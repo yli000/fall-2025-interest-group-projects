@@ -4,6 +4,64 @@ This notebook demonstrates a pipeline for leveraging **pretrained deep learning 
 
 ---
 
+## 2. Setting up the Virtual Environment
+
+To stay within your home directory quota, we'll create the virtual environment in the fast, temporary file system located at **`$TMPDIR`**.
+
+### Option A. Manual Virtual Environment Setup (Recommended for Jupyter Users)
+
+This approach creates a reusable `.venv` in `$TMPDIR` that you can activate manually and connect to your Jupyter notebook.
+
+#### 1. **Create and Activate the Environment in `$TMPDIR`:**
+
+```bash
+# Create the virtual environment directly in $TMPDIR
+uv venv $TMPDIR/.venv
+
+# Activate it
+source $TMPDIR/.venv/bin/activate
+```
+
+#### 2. **Navigate to the Project Directory and Link Dependencies:**
+
+Navigate to your project directory and create a **symbolic link** named `.venv` that points back to the environment in `$TMPDIR`.
+
+Assuming your current project directory is:
+`/storage/home/hcoda1/9/mgustineli3/dsgt-arc/fall-2025-interest-group-projects/user/mgustineli/project/01-llm-lora/`
+
+```bash
+# Navigate to your project directory
+cd /storage/home/hcoda1/9/mgustineli3/dsgt-arc/fall-2025-interest-group-projects/user/mgustineli/project/01-llm-lora/
+
+# Create a symbolic link named .venv in your project folder, 
+# pointing to the actual environment in $TMPDIR
+ln -s $TMPDIR/.venv $(pwd)/.venv
+
+# Install project dependencies defined in pyproject.toml
+uv pip install -e .
+```
+
+Once done, open the Jupyter notebook and select the newly linked **`.venv`** kernel.
+
+---
+
+### Option B. Using `UV_PROJECT_ENVIRONMENT` (Recommended for Batch or Sbatch Runs)
+
+You can configure the environment path once via an environment variable, which is useful for non-interactive jobs.
+
+```bash
+# Set the environment variable to the $TMPDIR location
+export UV_PROJECT_ENVIRONMENT=$TMPDIR/.venv
+
+# Install all dependencies, including optional [dev] extras
+uv sync --all-extras
+
+# Navigate to project directory and link it for easier access (optional)
+# This step assumes you are in your project directory
+cd /storage/home/hcoda1/9/mgustineli3/dsgt-arc/fall-2025-interest-group-projects/user/mgustineli/project/01-llm-lora/
+ln -s $UV_PROJECT_ENVIRONMENT $(pwd)/.venv
+```
+
 ## Key Concepts Covered
 
 ### 1. Embeddings
